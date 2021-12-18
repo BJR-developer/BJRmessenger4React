@@ -11,6 +11,13 @@
 body {
     background-color: #ddd;
 }
+form{
+    display:flex;
+  flex-direction:row;
+}
+input{
+    flex-grow:2;
+}
 #submitButton{
     cursor: pointer;
     border-radius: 30px;

@@ -7,8 +7,13 @@ var socket=io();
  var inputField = document.getElementById('mszfield');
  var form = document.getElementById('form-message');
  var submit = document.getElementById('submitButton');
+ var forScroll = document.getElementById("forScroll");
+ var audio = new Audio('audio/ting.mp3');
+ var name = prompt("Please Enter Your Name To Join This Chat")
+ var tS = window.speechSynthesis.speak(new SpeechSynthesisUtterance('Hello World'));
 
 
+ forScroll.scrollTop = forScroll.scrollHeight
 
  form.addEventListener('submit' , (e)=>{
      e.preventDefault();
@@ -26,17 +31,26 @@ var socket=io();
     sendMsz.classList.add('messages--sent')
     sendMsz.textContent  = recData;
     conversation.appendChild(sendMsz);
-    console.log(recData)
- })
+  
+
+    forScroll.scrollTop = forScroll.scrollHeight
+})
 
  socket.on('send messages' , (msz)=>{
-
-
     var recMsz = document.createElement('div');
     recMsz.classList.add('messages')
     recMsz.classList.add('message')
     recMsz.classList.add('messages--received')
-    recMsz.textContent  = msz;
+    recMsz.innerHTML  = msz;
     conversation.appendChild(recMsz);
-    console.log(msz)
+
+    // let utter = new SpeechSynthesisUtterance();
+    // utter.lang = 'en-AU';
+    // utter.text = msz;
+    // utter.volume = 1;
+    // utter.pitch = 15;
+    // window.speechSynthesis.speak(utter);
+    audio.play()
+
+    forScroll.scrollTop = forScroll.scrollHeight;
  })
