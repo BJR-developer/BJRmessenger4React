@@ -18,10 +18,14 @@ io.on('connection' , (socket)=>{
     socket.on('disconnect' , () =>{
     console.log('A User Disconnect');
     });
-    socket.on('chat messages', (msz) => {
-        io.emit('chat messages' , msz)
+    socket.on('send messages', (msz) => {
+        socket.broadcast.emit('send messages' , msz)
         console.log('message: ' + msz);
       });
+      socket.on('rec messages' , data=>{
+          socket.emit('rec messages' , data)
+          console.log("received messages:" + data);
+      })
 })
 
 server.listen(port , ()=>{

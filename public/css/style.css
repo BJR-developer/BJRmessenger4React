@@ -63,34 +63,34 @@ body {
 .messages {
     margin-bottom: 10px;
 }
-.messages--received >div {
+.messages--received  {
     float: left;
     background-color: #ddd;
     border-bottom-left-radius: 5px;
     border-top-left-radius: 5px;
 }
-.messages--received >div:first-child {
+.messages--received :first-child {
     border-top-left-radius: 15px;
 }
-.messages--received >div:last-child {
+.messages--received :last-child {
     border-bottom-left-radius: 15px;
 }
 
 
-.messages--sent >div {
+.messages--sent  {
     float: right;
     background-color: #1998e6;
     color: #fff;
     border-bottom-right-radius: 5px;
     border-top-right-radius: 5px;
 }
-.messages--sent >div :first-child {
+.messages--sent  :first-child {
     border-top-right-radius: 15px;
 }
-.messages--sent >div:last-child {
+.messages--sent:last-child {
     border-bottom-right-radius: 15px;
 }
-.messages--sent >div{
+.messages--sent {
     display: inline-block;
     margin-bottom: 2px;
     clear: both;
@@ -109,7 +109,7 @@ body {
     border-radius: 15px;
     line-height: 1.4;
 }
-.messages--received >div {
+.messages--received {
     display: inline-block;
     margin-bottom: 2px;
     clear: both;
