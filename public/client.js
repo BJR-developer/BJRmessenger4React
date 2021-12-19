@@ -28,12 +28,14 @@ socket.emit('chat name' , name);
     joinChat.innerText=data +" Join The Chat"
     conversation.appendChild(joinChat)
     console.log(data + "A person Join The Chat");
+    forScroll.scrollTop = forScroll.scrollHeight
  })
  socket.on('forLeave', data=>{
     const joinChat = document.createElement('div');
     joinChat.classList.add('forCenterText');
     joinChat.innerText=data +" Leave From The Chat"
     conversation.appendChild(joinChat)
+    forScroll.scrollTop = forScroll.scrollHeight
  })
  socket.on('send messages' , (recData)=>{
     var sendMsz = document.createElement('div');
