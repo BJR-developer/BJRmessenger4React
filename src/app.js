@@ -15,19 +15,23 @@ router.get("/", (req, res) => {
 
 io.on('connection', (socket) => {
     console.log('A user connected');
-    socket.on('disconnect', () => {
-        console.log('A User Disconnect');
-    });
-    socket.on('send messages', (msz) => {
+    socket.on('received messages', (msz) => {
         var username = msz.username
         var inputval = msz.inputval
-        socket.broadcast.emit('send messages', {inputval, username})
+        socket.broadcast.emit('received messages', {inputval, username})
         console.log('message: ' + msz.inputval);
     });
-    socket.on('rec messages', data => {
+    socket.on('send messages', data => {
         var inputval = data.inputval
-        socket.emit('rec messages', inputval)
+        socket.emit('send messages', inputval)
         console.log("received messages:" + inputval);
+    })
+    socket.on('forJoin' , person=>{
+        socket.broadcast.emit('forJoin' , person);
+        socket.on('disconnect', () => {
+            socket.broadcast.emit('forLeave' , person)
+            console.log(person + ' User Disconnect');
+        });
     })
 })
 

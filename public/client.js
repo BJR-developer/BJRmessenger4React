@@ -16,13 +16,26 @@ socket.emit('chat name' , name);
  form.addEventListener('submit' , (e)=>{
      e.preventDefault();
      if(inputField.value){
-         socket.emit('send messages' , {inputval:inputField.value , username:name });
-         socket.emit('rec messages' , {inputval:inputField.value});
+         socket.emit('received messages' , {inputval:inputField.value , username:name });
+         socket.emit('send messages' , {inputval:inputField.value});
          inputField.value = '';
      }
  });
-
- socket.on('rec messages' , (recData)=>{
+ socket.emit('forJoin' , name);
+ socket.on('forJoin', data=>{
+    const joinChat = document.createElement('div');
+    joinChat.classList.add('forCenterText');
+    joinChat.innerText=data +" Join The Chat"
+    conversation.appendChild(joinChat)
+    console.log(data + "A person Join The Chat");
+ })
+ socket.on('forLeave', data=>{
+    const joinChat = document.createElement('div');
+    joinChat.classList.add('forCenterText');
+    joinChat.innerText=data +" Leave From The Chat"
+    conversation.appendChild(joinChat)
+ })
+ socket.on('send messages' , (recData)=>{
     var sendMsz = document.createElement('div');
     sendMsz.classList.add('messages')
     sendMsz.classList.add('message')
@@ -32,8 +45,7 @@ socket.emit('chat name' , name);
     forScroll.scrollTop = forScroll.scrollHeight
 })
 
- socket.on('send messages' , (msz)=>{
-     console.log(msz);
+ socket.on('received messages' , (msz)=>{
     const username = msz.username
     const inputval = msz.inputval
     const recMsz = document.createElement('div');
@@ -50,4 +62,7 @@ socket.emit('chat name' , name);
     // window.speechSynthesis.speak(utter);
     audio.play()
     forScroll.scrollTop = forScroll.scrollHeight;
+ })
+ socket.on('connected' , person=>{
+     console.log(person + "Join The Chat");
  })

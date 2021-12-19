@@ -31,11 +31,13 @@ input{
     top: 15px;
     position: relative;
 }
-.titleName{     border-top-left-radius: 30px;
+.titleName{ 
+                letter-spacing: 5px;
+                border-top-left-radius: 30px;
                 border-top-right-radius: 30px;
                 margin: 0 auto;
                 font-family: 'Signika', sans-serif;
-                font-weight: 400;
+                font-weight: 900;
                 background-color: rgb(0, 128, 202);
                 color: white;
                 padding: 10px 0 10px 0;
@@ -60,7 +62,37 @@ input{
     width: 0;  /* Remove scrollbar space */
     background: transparent;  /* Optional: just make scrollbar invisible */
 }
+.pic{
+    width: 150px;
+    height: 150px;
+    margin: auto;
+    border: 2px solid rgb(206, 206, 206);
+    border-radius: 50%;
+}
+.profile{
+    padding-bottom: 50px;
+}
+.titleProfile{
+    margin: 20px auto auto auto;    font-weight: 700;
+    border:  0 0 3px 0;
+    border-bottom: 3px solid rgba(46, 217, 240, 0.7);
+    box-shadow: 0 20px 50px rgba(46, 217, 240, 0.7);
+    font-family: 'Montserrat', sans-serif;
+    text-align: center;
+    padding: 5px 10px 5px 10px;
+    width: 60%;
+}
+img{
+    box-shadow: 0 0 50px rgba(151, 151, 151, 0.7);
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
 .forCenterText{
+    font-size: 14px;
+    clear: both;
     text-align: center;
 }
 .conversation {
