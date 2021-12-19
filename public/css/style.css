@@ -60,7 +60,9 @@ input{
     width: 0;  /* Remove scrollbar space */
     background: transparent;  /* Optional: just make scrollbar invisible */
 }
-
+.forCenterText{
+    text-align: center;
+}
 .conversation {
     height: calc(100% - 50px);
     overflow: auto;
