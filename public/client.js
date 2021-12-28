@@ -79,6 +79,7 @@ socket.emit('chat name' , name);
 
  form.addEventListener('submit' , (e)=>{
      e.preventDefault();
+return false;
      if(inputField.value){
          socket.emit('received messages' , {inputval:inputField.value , username:name });
          socket.emit('send messages' , {inputval:inputField.value , username:name});
