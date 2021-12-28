@@ -47,18 +47,6 @@ router.post("/signup" , (req,res)=>{
         signup.save();
     }
 });
-router.post('/chat' , (req,res)=>{
-    res.setHeader("Content-Type","application/json")
-    res.statusCode=200;
-    res.json("message save DOne")
-    const msz = {
-        "messages":"kya baad he",
-        "sender":"rahad",
-    }
-    let result = new chatModel(msz);
-    result.save().then(data=>{console.log(data);});
-    res.end();
-})
 
 router.get("/chat", async (req, res) => {
     const dataRead = await chatModel.find({}).then(data=>{
