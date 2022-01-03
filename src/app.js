@@ -19,7 +19,7 @@ const chatModel = require('./database/schema')
 const {bjrmodel} = require('./database/PrivateSchema')
 const {genToken , authToken }  = require('./middleware/token')
 require('./database/connection')
-// router.use(express.static('public'))
+router.use(express.static('public'))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
 app.set('view engine' , 'html')
@@ -27,9 +27,6 @@ app.engine('html', hbs.__express);
 app.set('views' , mainpath )
 app.use(router)
 
-router.get("/"   , (req,res)=>{
-    res.render('main')
-})
 router.get('/userData' , (req,res)=>{
     res.send(req.cookies.user)  
 })
