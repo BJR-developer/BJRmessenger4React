@@ -1,60 +1,94 @@
+require("dotenv").config();
 const express = require('express')
-const  bodyParser  = require("body-parser");
+const bodyParser  = require("body-parser");
+const cookieParser = require('cookie-parser')
+const bcrypt = require('bcrypt')
 const app = express()
+app.use(cookieParser())
+const hbs  = require('hbs')
+const path = require('path')
+const mainpath = path.join(__dirname , './views')
+const homepath = path.join(__dirname , './views/index.html')
 const http = require('http')
 const server = http.createServer(app)
 const {Server} = require('socket.io')
 const io = new Server(server)
-const port = process.env.PORT || 3000
+const port = process.env.PORT ||4000
 const router = express.Router();
 const chatModel = require('./database/schema')
+const {bjrmodel} = require('./database/PrivateSchema')
+const {genToken , authToken }  = require('./middleware/token')
 require('./database/connection')
-const userModel = require('./database/PrivateSchema')
-app.use(router)
-router.use(express.static('public'))
+// router.use(express.static('public'))
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }))
+app.set('view engine' , 'html')
+app.engine('html', hbs.__express);
+app.set('views' , mainpath )
+app.use(router)
 
-router.post('/login' ,(req,res)=>{
-    const username = req.body.username
-    const password = req.body.password
-    const userinfo = userModel.find({username:username} , data=>{
-        if(username===data.username && password===data.password){
-            res.redirect('/messenger')
-        }else{
-            res.send("user not found. please check your information correct or signup from freelancerbjr.com")
+router.get("/"  , authToken , (req,res)=>{
+    res.render('main')
+})
+router.get('/userData' , (req,res)=>{
+    res.send(req.cookies.user)  
+})
+router.get('/login' , (req,res)=>{
+    res.render('login')
+})
+router.get('/chat' ,async (req, res) =>{
+    try {
+     const data = await chatModel.find({})
+     res.send(data)
+    } catch (error) {
+     console.log(error);
+    }
+})
+router.post('/signup' ,async(req,res)=>{
+    const {name , email , password} = req.body
+    try {
+        const data =await new bjrmodel({name , email , password} , d=>console.log(d))
+    const datasave =await data.save()
+    console.log(datasave); 
+    } catch (error) {
+        res.status(401).send("Information provlem")
+        console.log(error);
+    }
+})
+router.post("/login" , async(req ,res)=>{
+    const {email , password} = req.body
+    try { 
+        const logininfo = await bjrmodel.findOne({email})
+        if (logininfo===null) {
+            res.redirect('/login')
+            console.log("please try agian");
         }
-    })
+        const token = genToken(logininfo.email)
+        let fpassword = bcrypt.compare(password , logininfo.password)
+        if (logininfo===null) {
+            res.redirect('/login')
+            console.log("please try agian");
+        }else if(logininfo.email==email && fpassword){
+            res.cookie("user" , logininfo , {expires:new Date(Date.now()+600000)})
+            res.cookie('token' , token , {expires:new Date(Date.now()+600000)})
+            res.redirect('/')
+        }else{
+            res.redirect('/login')
+        }
+    } catch (error) {
+        console.log(error);
+    }
 })
-router.post("/signup" , (req,res)=>{
-    const username = req.body.username
-    const password = req.body.password
-    const cpassword = req.body.cpassword
-    
-    const user = {
-        "username":username,
-        "password":password
-    }
-    if (password!==cpassword) {
-        res.send("password not match")
-    } else {
-        const signup = new userModel(user , (data,err)=>{
-            if(err){
-                res.send("please fillup your information again")
-            }else{
-                res.send("signup succesfully")
-            }
-        });
-        signup.save();
-    }
-});
 
-router.get("/chat", async (req, res) => {
-    const dataRead = await chatModel.find({}).then(data=>{
-        res.json(data)
-    }).catch(err=>{
-        console.log(err);
-    })
+router.get("/logout" , (req,res)=>{
+    res.clearCookie("token")
+    res.clearCookie("user")
+    res.send("Logout succesfully")
+    console.log(req.cookies.userData);
 })
+
+//socket side
+
 io.on('connection', (socket) => {
     console.log('A user connected');
     socket.on('received messages', (msz) => {

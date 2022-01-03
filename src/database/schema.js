@@ -6,6 +6,6 @@ const schema = new mongoose.Schema({
     connections:String,
 })
 
-let chatModel = new mongoose.model('Chat' , schema);
+let chatModel = new mongoose.model('messenger' , schema);
 
 module.exports = chatModel

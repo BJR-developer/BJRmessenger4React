@@ -8,7 +8,6 @@ var socket=io();
  var forScroll = document.getElementById("forScroll");
  var audio = new Audio('audio/chat.mp3');
  var name ="test" 
-//  prompt("Please Enter Your Name To Join This Chat")
  var tS = window.speechSynthesis.speak(new SpeechSynthesisUtterance(`Welcome ${name} To BJR Messenger`));
 
 const dataFetching = ()=>{
@@ -18,7 +17,6 @@ const dataFetching = ()=>{
     })
     .then(json  =>  {
         json.map(data  =>  {
-            console.log(data);
             if (data.connections==undefined) {
                 
             } else {
@@ -53,6 +51,13 @@ const dataFetching = ()=>{
         })
     }
 dataFetching();
+function fetchData () {
+    fetch('/userData')
+    .then(data=>alert(data))
+    .catch(e=>alert("kaj e kore nai"));
+}   
+fetchData ()
+
 socket.emit('chat name' , name);
  forScroll.scrollTop = forScroll.scrollHeight
 
@@ -70,7 +75,6 @@ socket.emit('chat name' , name);
     joinChat.classList.add('forCenterText');
     joinChat.innerText=data +" Join The Chat"
     conversation.appendChild(joinChat)
-    console.log(data + "A person Join The Chat");
     forScroll.scrollTop = forScroll.scrollHeight
  })
  socket.on('forLeave', data=>{
@@ -109,5 +113,4 @@ socket.emit('chat name' , name);
     forScroll.scrollTop = forScroll.scrollHeight;
  })
  socket.on('connected' , person=>{
-     console.log(person + "Join The Chat");
  })
