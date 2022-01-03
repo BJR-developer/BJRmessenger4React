@@ -27,7 +27,7 @@ app.engine('html', hbs.__express);
 app.set('views' , mainpath )
 app.use(router)
 
-router.get("/"  , authToken , (req,res)=>{
+router.get("/"   , (req,res)=>{
     res.render('main')
 })
 router.get('/userData' , (req,res)=>{

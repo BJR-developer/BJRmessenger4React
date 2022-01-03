@@ -9,7 +9,7 @@ function genToken(email) {
 function authToken(req,res,next) {
     jwt.verify(req.cookies.token , process.env.TOKEN_SECRET  , (err ,data)=>{
         if(err){
-            return res.send("Please login and come here")
+            return res.redirect("/login")
         }else{
             console.log(data);
             next()
