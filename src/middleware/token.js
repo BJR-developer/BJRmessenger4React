@@ -7,7 +7,7 @@ function genToken(email) {
 }
 
 function authToken(req,res,next) {
-    jwt.verify(req.cookies.token , process.env.TOKEN_SECRET  , (err ,data)=>{
+    jwt.verify(req.cookies.token , 'f672618ad818a21e961d46ddac3033cd0e9a6eb508375dcc5ee5eb53c101885354e7dacdf492176fd697ab1b5992dccb0d0afb658a9db3bc65c068e91e997884'  , (err ,data)=>{
         if(err){
             return res.redirect("/login")
         }else{
