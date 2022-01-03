@@ -31,14 +31,15 @@ router.get("/" , authToken ,  (req,res)=>{
     const userData = req.cookies.user
     res.render('main' , userData)
 })
-router.get('/login' , (req,res)=>{
-    res.render('login')
-})
 router.get('/userData' , (req,res)=>{
     res.send(req.cookies.user)  
 })
 router.get('/login' , (req,res)=>{
-    res.render('login')
+    if(req.cookies.token){
+        res.redirect('/')
+    }else{
+        res.render('login')
+    }
 })
 router.get('/chat' ,async (req, res) =>{
     try {
@@ -87,7 +88,7 @@ router.post("/login" , async(req ,res)=>{
 router.get("/logout" , (req,res)=>{
     res.clearCookie("token")
     res.clearCookie("user")
-    res.send("Logout succesfully")
+    res.redirect("/login")
     console.log(req.cookies.userData);
 })
 
