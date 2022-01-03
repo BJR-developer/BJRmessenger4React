@@ -22,11 +22,18 @@ require('./database/connection')
 router.use(express.static('public'))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
-app.set('view engine' , 'html')
-app.engine('html', hbs.__express);
+app.set('view engine' , 'hbs')
+app.engine('hbs', hbs.__express);
 app.set('views' , mainpath )
 app.use(router)
 
+router.get("/" , authToken ,  (req,res)=>{
+    const userData = req.cookies.user
+    res.render('main' , userData)
+})
+router.get('/login' , (req,res)=>{
+    res.render('login')
+})
 router.get('/userData' , (req,res)=>{
     res.send(req.cookies.user)  
 })
@@ -66,8 +73,8 @@ router.post("/login" , async(req ,res)=>{
             res.redirect('/login')
             console.log("please try agian");
         }else if(logininfo.email==email && fpassword){
-            res.cookie("user" , logininfo , {expires:new Date(Date.now()+600000)})
-            res.cookie('token' , token , {expires:new Date(Date.now()+600000)})
+            res.cookie("user" , logininfo , {maxAge: 900000, httpOnly: true })
+            res.cookie('token' , token , {maxAge: 900000, httpOnly: true })
             res.redirect('/')
         }else{
             res.redirect('/login')
@@ -91,14 +98,15 @@ io.on('connection', (socket) => {
     socket.on('received messages', (msz) => {
         var username = msz.username
         var inputval = msz.inputval
-        socket.broadcast.emit('received messages', {inputval, username})
+        var email = msz.email
+        socket.broadcast.emit('received messages', {inputval, username , email})
         console.log('message: ' + msz.inputval);
     });
     socket.on('send messages', data => {
-        var sender = data.username;
         var inputval = data.inputval
         socket.emit('send messages', inputval)
         const msz= {
+            'email' : data.email,
             'sender'  :data.username,
             'messages':data.inputval
         }

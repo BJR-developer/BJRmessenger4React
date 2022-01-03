@@ -7,8 +7,11 @@ var socket=io();
  var submit = document.getElementById('submitButton');
  var forScroll = document.getElementById("forScroll");
  var audio = new Audio('audio/chat.mp3');
- var name ="test" 
-//  prompt("Please Enter Your Name To Join This Chat")
+ var dataName = document.querySelector('#myname')
+ var name = dataName.innerHTML;
+ var dataEmail = document.querySelector('#myemail')
+ var email = dataEmail.innerHTML;
+ console.log(name);
  var tS = window.speechSynthesis.speak(new SpeechSynthesisUtterance(`Welcome ${name} To BJR Messenger`));
 
 const dataFetching = ()=>{
@@ -30,7 +33,7 @@ const dataFetching = ()=>{
 
             }
             
-            if (data.sender==name) {
+            if (data.sender==name && data.email==email) {
                 var sendMsz = document.createElement('div');
                 sendMsz.classList.add('messages')
                 sendMsz.classList.add('message')
@@ -59,8 +62,8 @@ socket.emit('chat name' , name);
  form.addEventListener('submit' , (e)=>{
      e.preventDefault();
      if(inputField.value){
-         socket.emit('received messages' , {inputval:inputField.value , username:name });
-         socket.emit('send messages' , {inputval:inputField.value , username:name});
+         socket.emit('received messages' , {inputval:inputField.value , username:name , email });
+         socket.emit('send messages' , {inputval:inputField.value , username:name , email});
          inputField.value = '';
      }
  });
@@ -91,22 +94,31 @@ socket.emit('chat name' , name);
 })
 
  socket.on('received messages' , (msz)=>{
-    const username = msz.username
-    const inputval = msz.inputval
-    const recMsz = document.createElement('div');
-    recMsz.classList.add('messages')
-    recMsz.classList.add('message')
-    recMsz.classList.add('messages--received')
-    recMsz.innerHTML  = `<b>${username}:</b> ${inputval}`;
-    conversation.appendChild(recMsz);
-    // let utter = new SpeechSynthesisUtterance();
-    // utter.lang = 'en-AU';
-    // utter.text = msz;
-    // utter.volume = 1;
-    // utter.pitch = 15;
-    // window.speechSynthesis.speak(utter);
-    audio.play()
-    forScroll.scrollTop = forScroll.scrollHeight;
+   
+    if(msz.email===email && msz.username===username){
+        var sendMsz = document.createElement('div');
+        sendMsz.classList.add('messages')
+        sendMsz.classList.add('message')
+        sendMsz.classList.add('messages--sent')
+        sendMsz.innerText  = data.messages;
+        conversation.appendChild(sendMsz);
+        forScroll.scrollTop = forScroll.scrollHeight
+    }else{
+        const recMsz = document.createElement('div');
+        recMsz.classList.add('messages')
+        recMsz.classList.add('message')
+        recMsz.classList.add('messages--received')
+        recMsz.innerHTML  = `<b>${msz.username}:</b> ${msz.inputval}`;
+        conversation.appendChild(recMsz);
+        audio.play()
+            // let utter = new SpeechSynthesisUtterance();
+        // utter.lang = 'en-AU';
+        // utter.text = msz;
+        // utter.volume = 1;
+        // utter.pitch = 15;
+        // window.speechSynthesis.speak(utter);
+        forScroll.scrollTop = forScroll.scrollHeight;
+    }
  })
  socket.on('connected' , person=>{
      console.log(person + "Join The Chat");

@@ -35,6 +35,9 @@
         </form>
         </div>
     </div>
+    {{!-- name send to javascript --}}
+    <div id="myname" style="visibility: hidden;">{{{name}}}</div>
+    <div id="myemail" style="visibility: hidden;">{{{email}}}</div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="client.js"></script>
     <script>
