@@ -64,10 +64,7 @@ router.post("/login" , async(req ,res)=>{
     const {email , password} = req.body
     try { 
         const logininfo = await bjrmodel.findOne({email})
-        if (logininfo===null) {
-            res.redirect('/login')
-            console.log("please try again");
-        }
+        console.log(logininfo);
         let fpassword =await bcrypt.compare(password , logininfo.password)
         if (logininfo===null) {
             res.redirect('/login')
