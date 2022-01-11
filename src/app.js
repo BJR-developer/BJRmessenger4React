@@ -66,14 +66,14 @@ router.post("/login" , async(req ,res)=>{
         const logininfo = await bjrmodel.findOne({email})
         if (logininfo===null) {
             res.redirect('/login')
-            console.log("please try agian");
+            console.log("please try again");
         }
-        const token = genToken(logininfo.email)
-        let fpassword = bcrypt.compare(password , logininfo.password)
+        let fpassword =await bcrypt.compare(password , logininfo.password)
         if (logininfo===null) {
             res.redirect('/login')
-            console.log("please try agian");
-        }else if(logininfo.email==email && fpassword){
+            console.log("please try again");
+        }else if(logininfo.email===email && fpassword===true){
+            const token = genToken(logininfo.email)
             res.cookie("user" , logininfo , {maxAge: 900000, httpOnly: true })
             res.cookie('token' , token , {maxAge: 900000, httpOnly: true })
             res.redirect('/')
@@ -89,19 +89,16 @@ router.get("/logout" , (req,res)=>{
     res.clearCookie("token")
     res.clearCookie("user")
     res.redirect("/login")
-    console.log(req.cookies.userData);
 })
 
 //socket side
 
 io.on('connection', (socket) => {
-    console.log('A user connected');
     socket.on('received messages', (msz) => {
         var username = msz.username
         var inputval = msz.inputval
         var email = msz.email
         socket.broadcast.emit('received messages', {inputval, username , email})
-        console.log('message: ' + msz.inputval);
     });
     socket.on('send messages', data => {
         var inputval = data.inputval
@@ -113,7 +110,6 @@ io.on('connection', (socket) => {
         }
         let dataInsert = new chatModel(msz);
         dataInsert.save().then(data=>{console.log(data);});
-        console.log("received messages:" + inputval);
     })
     socket.on('forJoin' , person=>{
         socket.broadcast.emit('forJoin' , person);
@@ -123,7 +119,6 @@ io.on('connection', (socket) => {
 
         socket.on('disconnect', () => {
             socket.broadcast.emit('forLeave' , person)
-            console.log(person + ' User Disconnect');
             let dataInsert = new chatModel({"connections": person + " leave from the chat"});
             dataInsert.save().then(data=>{console.log(data);});
         });
